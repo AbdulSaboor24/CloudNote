@@ -1,25 +1,28 @@
-import './App.css';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Home from './components/Home';
-import About from './components/About';
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route
-} from 'react-router-dom'
+import Landing from './components/Landing';
+import Signup from './components/Signup';
+import Login from './components/Login';
+import Home from './pages/Home';
+import Profile from './pages/Profile';
 
-function App() {
+const App = () => {
+
   return (
-    <>
-      <Router>
-        <Navbar />
+    <Router>
+      <Navbar/>
+      <div className="container">
         <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route exact path="/about" element={<About />} />
+          <Route path="/" element={<Landing />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/notes" element={<Home />} />
+          <Route path="/profile" element={<Profile/>} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
-      </Router>
-    </>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;

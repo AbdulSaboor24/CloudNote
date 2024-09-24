@@ -43,7 +43,7 @@ router.post('/createUser', [
             id: user.id
             }
         }
-        const token = jwt.sign(data, JWT_Secret)
+        const token = jwt.sign(data, JWT_Secret, {expiresIn: '1h'})
         res.json({token})
 
     } catch (error) {
@@ -83,7 +83,7 @@ router.post('/login', [
             }
         };
 
-        const token = jwt.sign(data, JWT_Secret);
+        const token = jwt.sign(data, JWT_Secret, {expiresIn: '1h'});
         res.json({token});
 
     } catch (error) {
