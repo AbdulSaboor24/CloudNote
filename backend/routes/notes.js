@@ -17,9 +17,9 @@ router.get('/fetchallnotes', fetchuser, async (req, res) => {
 
 // Route 2: add a new Note using: Post "api/notes/addnote".
 router.post('/addnote', fetchuser, [
-    body('title', 'Title must be at least 3 characters').isLength({ min: 3 }),
-    body('description', 'Description must be at least 5 characters').isLength({ min: 5 }),
-    /* body('content', 'Content cannot be empty').isLength({ min: 1 })*/
+    body('title', 'Title must be at least 1 characters').isLength({ min: 1 }),
+    body('description', 'Description must be at least 1 characters').isLength({ min: 1 }),
+    body('content', 'Content cannot be empty').isLength({ min: 1 })
 ], async (req, res) => {
     const { title, description, tag, content } = req.body;
 
@@ -30,7 +30,7 @@ router.post('/addnote', fetchuser, [
         }
 
         const note = new Note({
-            title, description, tag,
+            title, description, tag, content,
             user: req.user.id
         });
         const savedNote = await note.save();
@@ -43,7 +43,7 @@ router.post('/addnote', fetchuser, [
 
 // Route 3: Updating a already existing Note using: Put "api/notes/updatenote".
 router.put('/updatenote/:id', fetchuser, async (req, res) => {
-    const { title, description, tag } = req.body
+    const { title, description, tag, content } = req.body
     try {
         const newNote = {};
         if (title) {
@@ -54,6 +54,9 @@ router.put('/updatenote/:id', fetchuser, async (req, res) => {
         }
         if (tag) {
             newNote.tag = tag
+        }
+        if (content) {
+            newNote.content = content
         }
 
         let note = await Note.findById(req.params.id);
@@ -93,4 +96,22 @@ router.delete('/deletenote/:id', fetchuser, async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
+
+// Route 5: Fetch a single note by ID using: GET "api/notes/fetchnote/:id". login required
+router.get('/fetchnote/:id', fetchuser, async (req, res) => {
+    try {
+        const note = await Note.findById(req.params.id);
+        if (!note) {
+            return res.status(404).send("Note not found");
+        }
+        if (note.user.toString() !== req.user.id) {
+            return res.status(401).send("You can only access your own notes");
+        }
+        res.json(note);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
 module.exports = router

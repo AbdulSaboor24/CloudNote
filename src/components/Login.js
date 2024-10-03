@@ -1,24 +1,27 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
-const API_URL = "http://localhost:5000";
+import UserService from '../services/UserService';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isInvalid, setIsInvalid] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post(`${API_URL}/api/auth/login`, { email, password });
-      const { token } = response.data;
+    setError('');
+    setIsInvalid(false);
 
-      // Store the token in local storage
+    try {
+      const { token } = await UserService.login(email, password);
       localStorage.setItem('token', token);
-      navigate('/notes'); // Redirect to the notes page after successful login
+      navigate('/notes');
+      window.location.reload();
     } catch (error) {
+      setError('Invalid credentials, please try again.');
+      setIsInvalid(true);
       console.error('Error logging in:', error);
     }
   };
@@ -29,12 +32,27 @@ const Login = () => {
       <form onSubmit={handleLogin}>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">Email</label>
-          <input type="email" className="form-control" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <input
+            type="email"
+            className={`form-control ${isInvalid ? 'is-invalid' : ''}`}
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
         </div>
         <div className="mb-3">
           <label htmlFor="password" className="form-label">Password</label>
-          <input type="password" className="form-control" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <input
+            type="password"
+            className={`form-control ${isInvalid ? 'is-invalid' : ''}`}
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
         </div>
+        {error && <div className="text-danger mb-3">{error}</div>}
         <button type="submit" className="btn btn-primary">Login</button>
       </form>
     </div>

@@ -5,7 +5,7 @@ import NotesList from '../components/NotesList';
 import noteService from '../services/noteService';
 import { useNavigate } from 'react-router-dom';
 
-const Home = () => {
+const Home = ({mode}) => {
   const [notes, setNotes] = useState([]);
   const [editingNote, setEditingNote] = useState(null);
   const [addingNote, setAddingNote] = useState(false);
@@ -65,18 +65,16 @@ const Home = () => {
 
   return (
     <div className="container my-4">
-      <h2>Welcome to CloudNote!</h2>
-      <p>Start creating and managing your notes below:</p>
       {editingNote ? (
-        <NoteEditor note={editingNote} onSave={handleSave} onCancel={handleCancel} />
+        <NoteEditor note={editingNote} onSave={handleSave} onCancel={handleCancel} mode={mode}/>
       ) : addingNote ? (
-        <NoteAdder onSave={handleSave} onCancel={handleCancel} />
+        <NoteAdder onSave={handleSave} onCancel={handleCancel} mode={mode}/>
       ) : (
         <div>
           <button className="btn btn-primary mb-3" onClick={() => setAddingNote(true)}>
             Add Note
           </button>
-          <NotesList notes={notes} onNoteEdit={handleEdit} onNoteDelete={handleDelete} />
+          <NotesList notes={notes} onNoteEdit={handleEdit} onNoteDelete={handleDelete} mode={mode}/>
         </div>
       )}
     </div>

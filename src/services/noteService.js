@@ -16,23 +16,23 @@ const getAuthHeaders = () => {
 };
 
 // Fetch all notes
-export const fetchAllNotes = async () => {
+const fetchAllNotes = async () => {
   const response = await axios.get(`${API_URL}/fetchallnotes`, getAuthHeaders());
   return response.data;
 };
 
 // Create a new note
-export const createNote = async ({ title, description, tag }) => {
+const createNote = async ({ title, description, tag, content }) => {
   const response = await axios.post(
     `${API_URL}/addnote`,
-    { title, description, tag },
+    { title, description, tag, content },
     getAuthHeaders()
   );
   return response.data;
 };
 
 // Update a note
-export const updateNote = async (id, note) => {
+const updateNote = async (id, note) => {
   const response = await axios.put(
     `${API_URL}/updatenote/${id}`,
     note,
@@ -42,22 +42,29 @@ export const updateNote = async (id, note) => {
 };
 
 // Delete a note
-export const deleteNote = async (id) => {
+const deleteNote = async (id) => {
   const response = await axios.delete(`${API_URL}/deletenote/${id}`, getAuthHeaders());
   return response.data;
 };
 
 // Fetch user details
-export const fetchUserDetails = async () => {
+const fetchUserDetails = async () => {
   const response = await axios.post(`http://localhost:5000/api/auth/getUser`, {}, getAuthHeaders());
   return response.data;
 };
 
+const fetchNoteById = async (id) => {
+  const response = await axios.get(`${API_URL}/fetchnote/${id}`, getAuthHeaders());
+  return response.data;
+};
 
-export default {
+const NoteService = {
   fetchAllNotes,
   createNote,
   updateNote,
   deleteNote,
-  fetchUserDetails
+  fetchNoteById,
+  fetchUserDetails,
 };
+
+export default NoteService;
