@@ -56,7 +56,7 @@ const SideBar = ({ show, onClose, profilePhoto }) => {
             aria-expanded="false"
           >
             <img
-              src={profilePhoto || "https://www.w3schools.com/w3images/avatar2.png"}
+              src="https://www.w3schools.com/w3images/avatar2.png"
               alt="User Avatar"
               width="32"
               height="32"
