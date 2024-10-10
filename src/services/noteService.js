@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = "https://cloudnote-backend-57ojzcedy-abdul-saboors-projects-f903894d.vercel.app/api/notes";
+const API_URL = "https://cloudnote-backend.vercel.app/api/notes";
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');
