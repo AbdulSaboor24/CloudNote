@@ -4,10 +4,9 @@ const User = require('../models/User');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-require('dotenv').config({ path: './.env.local' });
 const fetchuser = require('../middleware/fetchUser');
 
-const JWT_Secret = 'ABCDEFG';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Route 1: creating a user using POST "api/auth/createUser".
 router.post('/createUser', [
@@ -15,6 +14,8 @@ router.post('/createUser', [
     body('email', 'Enter a valid Email').isEmail(),
     body('password', 'The Password should be at least 8 characters long').isLength({ min: 2 })
 ], async (req, res) => {
+    console.log("Request Body:", req.body);
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
@@ -41,10 +42,12 @@ router.post('/createUser', [
             },
         };
 
-        const token = jwt.sign(data, JWT_Secret, { expiresIn: '5h' });
+        const token = jwt.sign(data, JWT_SECRET, { expiresIn: '5h' });
         res.json({ token });
 
     } catch (error) {
+        console.error(error.message);
+        console.log("JWT_SECRET:", process.env.JWT_SECRET);
         console.error("Error during user creation:", error.message);
         res.status(500).send("Failed to create user");
     }
@@ -79,7 +82,7 @@ router.post('/login', [
             }
         };
 
-        const token = jwt.sign(data, JWT_Secret, { expiresIn: '1h' });
+        const token = jwt.sign(data, JWT_SECRET, { expiresIn: '1h' });
         res.json({ token });
 
     } catch (error) {
